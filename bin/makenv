@@ -1,9 +1,21 @@
+#!/usr/bin/env php
 <?php
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-require('.makenv');
+$fname = getcwd()."/.makenv.php";
+
+if(file_exists($fname))
+{
+  require($fname);
+} else {
+  /* SETUP */
+  echo("Makenv is setting up your environment.\n");
+  echo("...creating .makenv.php - go set it up now, then call this again\n");
+  copy(dirname(__FILE__)."/../templates/.makenv.php", $fname);
+  die;
+}
 
 function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 {
@@ -23,6 +35,23 @@ function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 
   return $merged;
 }
+if(isset($argv[1]) && isset($configs[$argv[1]]))
+{
+  $environment = $argv[1];
+  $config = array_merge_recursive_distinct($configs['default'], $configs[$environment]);
+  $json = json_encode($config);
+  $s = file_get_contents(__DIR__.'/../templates/.env.php');
+  $s = preg_replace("/##json##/", $json, $s);
+  $fname = getcwd()."/.env.php";
+  if(file_exists($fname))
+  {
+    echo(".env.php already exists, add this to APP_CONFIG: {$json}\n");
+    die;
+  }
+  file_put_contents($fname, $s);
+  die;
+}
+echo("No environment specified, outputting all.\n");
 foreach($configs as $environment=>$config)
 {
   if($environment == 'default') continue;
