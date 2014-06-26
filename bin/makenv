@@ -1,0 +1,32 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+
+require('.makenv');
+
+function array_merge_recursive_distinct ( array &$array1, array &$array2 )
+{
+  $merged = $array1;
+
+  foreach ( $array2 as $key => &$value )
+  {
+    if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
+    {
+      $merged [$key] = array_merge_recursive_distinct ( $merged [$key], $value );
+    }
+    else
+    {
+      $merged [$key] = $value;
+    }
+  }
+
+  return $merged;
+}
+foreach($configs as $environment=>$config)
+{
+  if($environment == 'default') continue;
+  $config = array_merge_recursive_distinct($configs['default'], $config);
+  echo("\n{$environment}: SetEnv APP_CONFIG " . json_encode($config));
+  echo("\n");
+}
