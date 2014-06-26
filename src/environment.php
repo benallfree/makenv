@@ -1,11 +1,14 @@
 <?php
 namespace BenAllfree\Makenv;
 
+$vendorDir = dirname(dirname(dirname(__DIR__)));
+$baseDir = dirname($vendorDir);
+
 /*
 Parse the JSON structure from YD_SERVER_CONFIG into individual defines.
 See util/makenv.php for more information.
 */  
-$fname = __DIR__."/.env.php";
+$fname = $baseDir."/.env.php";
 $data = null;
 if(file_exists($fname))
 {
@@ -33,8 +36,8 @@ function r_build_config($arr, &$stack=null)
       r_build_config($v,$stack);
     } else {
       $name = join($stack, '_');
-      define('\'.$name, $v);
-//      error_log("$name, $v");
+      var_dump("var $name");
+      define($name, $v);
     }
     array_pop($stack);
   }

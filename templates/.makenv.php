@@ -14,11 +14,12 @@ $configs = array(
   */
   'default'=>array(
     'db'=>array(
-      'driver'    => 'mysql',
-      'host'      => 'localhost',
-      'charset'   => 'utf8',
-      'collation' => 'utf8_unicode_ci',
-      'prefix'    => '',
+      'driver'          => 'mysql',
+      'host'            => 'localhost',
+      'charset'         => 'utf8',
+      'collation'       => 'utf8_unicode_ci',
+      'prefix'          => '',
+      'connection_name' => 'default',
     ),
   ),
   
@@ -56,3 +57,4 @@ $configs = array(
   ),
 );
 
+>>>>>>> External Changes
