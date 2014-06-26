@@ -36,7 +36,6 @@ function r_build_config($arr, &$stack=null)
       r_build_config($v,$stack);
     } else {
       $name = join($stack, '_');
-      var_dump("var $name");
       define($name, $v);
     }
     array_pop($stack);
