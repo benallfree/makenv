@@ -26,7 +26,7 @@ $configs = array(
   /*
   An example of a local developer environment. These values will override whatever is found in default.
   */
-  'ben.local'=>array(
+  'local'=>array(
     'db'=>array(
       'catalog'  => 'my_db',
       'username'  => 'root',
@@ -35,11 +35,11 @@ $configs = array(
   ),
   
   /*
-  A production configuration.
+  A staging configuration.
   */
-  'mormonboyz.production'=>array(
+  'staging'=>array(
     'db'=>array(
-      'catalog'  => 'prod1_db',
+      'catalog'  => 'staging_db',
       'username'  => 'username',
       'password'  => 'password',
     ),
@@ -48,13 +48,11 @@ $configs = array(
   /*
   A different production configuration
   */
-  'mormongirlz.production'=>array(
+  'production'=>array(
     'db'=>array(
-      'catalog'  => 'prod2_db',
+      'catalog'  => 'prod1_db',
       'username'  => 'username',
       'password'  => 'password',
     ),
   ),
 );
-
->>>>>>> External Changes
