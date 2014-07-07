@@ -40,15 +40,18 @@ if(isset($argv[1]) && isset($configs[$argv[1]]))
   $environment = $argv[1];
   $config = array_merge_recursive_distinct($configs['default'], $configs[$environment]);
   $json = json_encode($config);
-  $s = file_get_contents(__DIR__.'/../templates/.env.php');
-  $s = preg_replace("/##json##/", $json, $s);
+  $env = array();
   $fname = getcwd()."/.env.php";
   if(file_exists($fname))
   {
-    echo(".env.php already exists, add this to APP_CONFIG: {$json}\n");
-    die;
+    $env = (include($fname));
   }
+  $env['APP_CONFIG'] = $json;
+
+  $s = file_get_contents(__DIR__.'/../templates/.env.php');
+  $s = preg_replace("/##php##/", var_export($env, true), $s);
   file_put_contents($fname, $s);
+  echo("{$fname} written.\n");
   die;
 }
 echo("No environment specified, outputting all.\n");
