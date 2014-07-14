@@ -37,6 +37,7 @@ function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 }
 function r_build_config($arr, &$stack=null)
 {
+  $res = array();
   if(!$stack) $stack = array();
   foreach($arr as $k=>$v)
   {
@@ -44,20 +45,29 @@ function r_build_config($arr, &$stack=null)
     $stack[] = $k;
     if(is_array($v))
     {
-      r_build_config($v,$stack);
+      $res = array_merge($res, r_build_config($v,$stack));
     } else {
       $name = join($stack, '_');
-      printf("SetEnv %s %s\n", $name, $v);
+      $res[$name] = $v;
     }
     array_pop($stack);
   }
+  return $res;
 }
 
 if(isset($argv[1]) && isset($configs[$argv[1]]))
 {
   $environment = $argv[1];
   $config = array_merge_recursive_distinct($configs['default'], $configs[$environment]);
-  r_build_config($config);
+  $final = r_build_config($config);
+  $fname = getcwd()."/.env";
+  $s = array();
+  foreach($final as $k=>$v)
+  {
+    $s[] = "$k=$v";
+    printf("SetEnv %s %s\n", $k, $v);
+  }
+  file_put_contents($fname, join("\n", $s));
   die;
 }
 printf("Please specify an environment: %s\n", join(', ', array_keys($configs)));
