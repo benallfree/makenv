@@ -60,14 +60,10 @@ if(isset($argv[1]) && isset($configs[$argv[1]]))
   $environment = $argv[1];
   $config = array_merge_recursive_distinct($configs['default'], $configs[$environment]);
   $final = r_build_config($config);
-  $fname = getcwd()."/.env";
-  $s = array();
   foreach($final as $k=>$v)
   {
-    $s[] = "$k=$v";
-    printf("SetEnv %s %s\n", $k, $v);
+    printf("%s=%s\n", $k, $v);
   }
-  file_put_contents($fname, join("\n", $s));
   die;
 }
 printf("Please specify an environment: %s\n", join(', ', array_keys($configs)));
