@@ -35,30 +35,29 @@ function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 
   return $merged;
 }
+function r_build_config($arr, &$stack=null)
+{
+  if(!$stack) $stack = array();
+  foreach($arr as $k=>$v)
+  {
+    $k = strtoupper($k);
+    $stack[] = $k;
+    if(is_array($v))
+    {
+      r_build_config($v,$stack);
+    } else {
+      $name = join($stack, '_');
+      printf("SetEnv %s %s\n", $name, $v);
+    }
+    array_pop($stack);
+  }
+}
+
 if(isset($argv[1]) && isset($configs[$argv[1]]))
 {
   $environment = $argv[1];
   $config = array_merge_recursive_distinct($configs['default'], $configs[$environment]);
-  $json = json_encode($config);
-  $env = array();
-  $fname = getcwd()."/.env.php";
-  if(file_exists($fname))
-  {
-    $env = (include($fname));
-  }
-  $env['APP_CONFIG'] = $json;
-
-  $s = file_get_contents(__DIR__.'/../templates/.env.php');
-  $s = preg_replace("/##php##/", var_export($env, true), $s);
-  file_put_contents($fname, $s);
-  echo("{$fname} written.\n");
+  r_build_config($config);
   die;
 }
-echo("No environment specified, outputting all.\n");
-foreach($configs as $environment=>$config)
-{
-  if($environment == 'default') continue;
-  $config = array_merge_recursive_distinct($configs['default'], $config);
-  echo("\n{$environment}: SetEnv APP_CONFIG " . json_encode($config));
-  echo("\n");
-}
+printf("Please specify an environment: %s\n", join(', ', array_keys($configs)));
